@@ -29,6 +29,12 @@
             </ItemTemplate>
             <ItemStyle VerticalAlign="top" />
         </asp:TemplateField>
+        <asp:TemplateField HeaderText="Project Name" SortExpression="ProjectName">
+            <ItemTemplate>
+                <strong><%# Eval("ProjectName")%></strong>
+            </ItemTemplate>
+            <HeaderStyle Wrap="False" />
+        </asp:TemplateField>
         <asp:TemplateField HeaderText="Priority" SortExpression="Priority.Name">
             <ItemTemplate>
                 <%# Eval("Priority.Name")%>
