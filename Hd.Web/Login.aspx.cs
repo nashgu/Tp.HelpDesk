@@ -89,32 +89,37 @@ public partial class TpLogin : PersisterBasePage
                 string username = UserName.Text;
                 string password = Password.Text;
                 // try to logon using LDAP
-                string email = null;
-                bool isInLDAP = LogonUsingLDAP(ref username, Password.Text, out email);
+                MembershipUser ldapUser = null;
+                bool isInLDAP = LogonUsingLDAP(username, Password.Text, out ldapUser);
                 if (isInLDAP)
                 {
-                    password = CryptSharp.Crypter.Blowfish.Crypt(Password.Text);
-                    if (!Requester.Validate(email, password))
+                    password = CryptSharp.Crypter.Blowfish.Crypt(Password.Text, new CryptSharp.CrypterOptions());
+                    
+                    Requester user = Requester.FindByEmail(ldapUser.Email);
+
+                    // validate by Requester.Validate(ldapUser.Email, password), but there is a reason to not valid requester
+                    // too long password??
+
+                    if (user == null)
                     {
                         // temporarily in try..catch, 'cause once saved Requester is not valid, but able to be logged
                         try
                         {
                             // if not exists, create new requester
-                            var newRequester = Requester.RetrieveOrCreate(null);
-                            newRequester.Email = email;
-                            newRequester.Password = password;
-                            newRequester.Login = username;
-                            newRequester.IsAdministrator = true;
+                            user = Requester.RetrieveOrCreate(user == null ? null : user.UserID);
+                            user.Email = ldapUser.Email;
+                            user.Login = ldapUser.UserName;
+                            user.Password = password;
+
                             // ... what else to save to create valid requester?
-                            Requester.Save(newRequester);
+                            Requester.Save(user);
                         }
                         catch (Exception ex)
                         {
-                            log.DebugFormat("Validate user with email '{0}'", email);
+                            log.DebugFormat("Error creating requester", ex);
                         }
                     }
-
-                    Requester user = Requester.FindByEmail(email);
+                    
                     PerformLogin(user);
                 }
                 else
@@ -125,9 +130,9 @@ public partial class TpLogin : PersisterBasePage
         }
     }
 
-    private bool LogonUsingLDAP(ref string username, string password, out string email)
+    private bool LogonUsingLDAP(string username, string password, out MembershipUser user)
     {
-        email = null;
+        user = null;
         foreach (MembershipProvider provider in this.GetADMembershipProviders())
         {
             if (provider.GetType() == typeof(ActiveDirectoryMembershipProvider))
@@ -152,9 +157,8 @@ public partial class TpLogin : PersisterBasePage
 
                 if (provider.ValidateUser(username, password))
                 {
-                    var user = provider.GetUser(username, false);
-                    if (user != null) email = user.Email;
-                    return true;
+                    user = provider.GetUser(username, false);                    
+                    return (user != null);
                 }
             }
         }

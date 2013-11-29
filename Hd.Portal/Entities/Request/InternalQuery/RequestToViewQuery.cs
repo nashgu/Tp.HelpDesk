@@ -12,10 +12,12 @@ namespace Hd.Portal
 		{
 			get
 			{
-				var selectQuery = new SelectQuery(typeof(Request));
+                if (Requester.LoggedUserID == null) return null;
+
+                var selectQuery = new SelectQuery(typeof(Request));
 				selectQuery.OrderByTerms.Clear();
 				selectQuery.AddOrderBy("CreateDate", OrderByDirection.Descending);
-
+                
 				int requesterID = Requester.LoggedUserID.Value;
 				WhereTerm term = WhereTerm.CreateIn(SqlExpression.Field("RequestID"),
 													string.Format(@"select r.RequestID from Request as r where (r.ParentProject.Company.CompanyID is null or (r.ParentProject.Company.CompanyID in ( select rq.Company.CompanyID from  Requester as rq where rq.UserID = {0} ) ) ) 

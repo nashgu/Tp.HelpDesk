@@ -17,7 +17,7 @@
 			<p>
 				Please
 				<tp:TpLoginStatus ID="ls" runat="server" />
-				to see your requests or <a href="register.aspx" >Register</a>. </p>
+				to see your requests</p><br/>
 		</asp:PlaceHolder>
 		<p>
 			You may:</p>
