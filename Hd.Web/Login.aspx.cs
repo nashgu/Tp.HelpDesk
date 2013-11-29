@@ -4,6 +4,7 @@
 // 
 
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Web;
 using System.Web.Security;
@@ -53,24 +54,80 @@ public partial class TpLogin : PersisterBasePage
 		TryLoginAnonymously();
 	}
 
-	private void PerformLogin(Requester requester)
+
+    private IEnumerable<MembershipProvider> GetADMembershipProviders()
+    {
+        MembershipProvider cz = Membership.Providers["CZ"];
+        if (cz != null)
+        {
+            yield return cz;
+        }
+
+        foreach (MembershipProvider provider in Membership.Providers)
+        {
+            if (provider != cz && provider is ActiveDirectoryMembershipProvider)
+            {
+                yield return provider;
+            }
+        }
+    }
+
+    private string StoreUserInfoIntoCookie(string username, System.Web.HttpCookie authCookie)
+    {        
+        FormsAuthenticationTicket ticket = FormsAuthentication.Decrypt(authCookie.Value);
+        FormsAuthenticationTicket newTicket =
+            new FormsAuthenticationTicket(ticket.Version, ticket.Name, ticket.IssueDate, ticket.Expiration, ticket.IsPersistent, username);
+        authCookie.Value = FormsAuthentication.Encrypt(newTicket);
+        return authCookie.Value;
+    }
+
+	private void PerformLogin(string username, string password)
 	{
 		Response.Cookies.Remove(Globals.LOGIN_COOKIE);
 		Response.Cookies.Remove(Globals.PASSWORD_COOKIE);
 
-		DataPortal.Instance.ResetCachedValue(typeof(Requester), requester.ID);
+		//DataPortal.Instance.ResetCachedValue(typeof(Requester), requester.ID);
 
-		FormsAuthentication.RedirectFromLoginPage(requester.ID.GetValueOrDefault().ToString(CultureInfo.InvariantCulture), RememberMe.Checked);
+        bool authenticated = false;
+        string fullDomainName = null;
+        foreach (MembershipProvider provider in this.GetADMembershipProviders())
+        {
+            if (provider.GetType() == typeof(ActiveDirectoryMembershipProvider))
+            {
+                string login = username;
+                if (username.Contains("\\"))
+                {
+                    string[] loginParts = username.Split('\\');
+                    if (loginParts.Length > 2)
+                    {
+                        continue;
+                    }
 
-		if (RememberMe.Checked)
-		{
-			var authCookie = HttpContext.Current.Request.Cookies.Get(FormsAuthentication.FormsCookieName);
-			if (authCookie != null)
-			{
-				authCookie.Expires = authCookie.Expires.AddMinutes(20130);
-			}
-		}
+                    if (loginParts[0].ToUpper() == provider.Name.ToUpper())
+                    {
+                        login = loginParts[1];
+                    }
+                    else
+                    {
+                        continue;
+                    }
+                }
 
+                if (provider.ValidateUser(login, password))
+                {
+                    fullDomainName = string.Format(@"{0}\{1}", provider.Name, login);
+                    System.Web.HttpCookie authCookie = FormsAuthentication.GetAuthCookie(fullDomainName, false);
+                    if (this.StoreUserInfoIntoCookie(username, authCookie) != null)
+                    {
+                        authCookie.Expires = authCookie.Expires.AddMinutes(20130);
+                        Response.Cookies.Add(authCookie);
+                        authenticated = true;
+                        break;
+                    }
+                }
+            }
+        }
+		FormsAuthentication.RedirectFromLoginPage(username, RememberMe.Checked);
 		Globals.IsLogOut = false;
 	}
 
@@ -82,14 +139,17 @@ public partial class TpLogin : PersisterBasePage
 				Response.Redirect("~/");
 				break;
 			case "Login":
-				if(Requester.Validate(UserName.Text, Password.Text))
-				{
-					Requester user = Requester.FindByEmail(UserName.Text);
-					PerformLogin(user);
-				}
-				else
-					FailureText.Text = "Login failed. Most likely you have entered incorrect login or password.";
-				break;
+
+                PerformLogin(UserName.Text, Password.Text);
+
+                //if(Requester.Validate(UserName.Text, Password.Text))
+                //{
+                //    Requester user = Requester.FindByEmail(UserName.Text);
+                //    PerformLogin(user);
+                //}
+                //else
+                //    FailureText.Text = "Login failed. Most likely you have entered incorrect login or password.";
+                break;
 		}
 	}
 
