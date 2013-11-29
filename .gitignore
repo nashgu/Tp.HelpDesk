@@ -25,3 +25,5 @@ _ReSharper*/
 [Tt]est[Rr]esult*
 *.dotCover
 packages/
+log.txt
+
