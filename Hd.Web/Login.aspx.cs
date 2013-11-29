@@ -13,47 +13,154 @@ using Hd.Portal;
 using Hd.Portal.Components;
 using Hd.Web.Extensions;
 using Hd.Web.Extensions.Components;
+using log4net;
 
 public partial class TpLogin : PersisterBasePage
 {
-	public override bool IsLoginPage
-	{
-		get { return true; }
-	}
+    private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-	protected override void OnInit(EventArgs e)
-	{
-		base.OnInit(e);
-		btnLoginAsGuest.Visible = Settings.IsPublicMode;
-	}
+    public override bool IsLoginPage
+    {
+        get { return true; }
+    }
 
-	protected void Page_Load(object sender, EventArgs e)
-	{
-		UserName.Focus();
-		Response.Expires = 0;
-		TryAutoLogin();
-	}
+    protected override void OnInit(EventArgs e)
+    {
+        base.OnInit(e);
+        btnLoginAsGuest.Visible = Settings.IsPublicMode;
+    }
 
-	private void TryLoginAnonymously()
-	{
-		if(Settings.IsPublicMode)
-			FormsAuthentication.RedirectFromLoginPage(Requester.ANONYMOUS_USER_ID.ToString(CultureInfo.InvariantCulture), false);
-	}
+    protected void Page_Load(object sender, EventArgs e)
+    {
+        UserName.Focus();
+        Response.Expires = 0;
+        TryAutoLogin();
+    }
 
-	private void TryAutoLogin()
-	{
-		if (IsPostBack)
-			return;
+    private void TryLoginAnonymously()
+    {
+        if (Settings.IsPublicMode)
+            FormsAuthentication.RedirectFromLoginPage(Requester.ANONYMOUS_USER_ID.ToString(CultureInfo.InvariantCulture), false);
+    }
 
-		if (Globals.IsLogOut || Requester.IsLoggedAsAnonymous)
-		{
-			Globals.IsLogOut = false;
-			return;
-		}
+    private void TryAutoLogin()
+    {
+        if (IsPostBack)
+            return;
 
-		TryLoginAnonymously();
-	}
+        if (Globals.IsLogOut || Requester.IsLoggedAsAnonymous)
+        {
+            Globals.IsLogOut = false;
+            return;
+        }
 
+        TryLoginAnonymously();
+    }
+
+    private void PerformLogin(Requester requester)
+    {
+        Response.Cookies.Remove(Globals.LOGIN_COOKIE);
+        Response.Cookies.Remove(Globals.PASSWORD_COOKIE);
+
+        DataPortal.Instance.ResetCachedValue(typeof(Requester), requester.ID);
+
+        FormsAuthentication.RedirectFromLoginPage(requester.ID.GetValueOrDefault().ToString(CultureInfo.InvariantCulture), RememberMe.Checked);
+
+        if (RememberMe.Checked)
+        {
+            var authCookie = HttpContext.Current.Request.Cookies.Get(FormsAuthentication.FormsCookieName);
+            if (authCookie != null)
+            {
+                authCookie.Expires = authCookie.Expires.AddMinutes(20130);
+            }
+        }
+
+        Globals.IsLogOut = false;
+    }
+
+    protected void OnLogin(object sender, CommandEventArgs e)
+    {
+        switch (e.CommandName)
+        {
+            case "LoginAsGuest":
+                Response.Redirect("~/");
+                break;
+            case "Login":
+                string username = UserName.Text;
+                string password = Password.Text;
+                // try to logon using LDAP
+                string email = null;
+                bool isInLDAP = LogonUsingLDAP(ref username, Password.Text, out email);
+                if (isInLDAP)
+                {
+                    password = CryptSharp.Crypter.Blowfish.Crypt(Password.Text);
+                    if (!Requester.Validate(email, password))
+                    {
+                        // temporarily in try..catch, 'cause once saved Requester is not valid, but able to be logged
+                        try
+                        {
+                            // if not exists, create new requester
+                            var newRequester = Requester.RetrieveOrCreate(null);
+                            newRequester.Email = email;
+                            newRequester.Password = password;
+                            newRequester.Login = username;
+                            newRequester.IsAdministrator = true;
+                            // ... what else to save to create valid requester?
+                            Requester.Save(newRequester);
+                        }
+                        catch (Exception ex)
+                        {
+                            log.DebugFormat("Validate user with email '{0}'", email);
+                        }
+                    }
+
+                    Requester user = Requester.FindByEmail(email);
+                    PerformLogin(user);
+                }
+                else
+                {
+                    FailureText.Text = "Login failed. Most likely you have entered incorrect login or password.";
+                }
+                break;
+        }
+    }
+
+    private bool LogonUsingLDAP(ref string username, string password, out string email)
+    {
+        email = null;
+        foreach (MembershipProvider provider in this.GetADMembershipProviders())
+        {
+            if (provider.GetType() == typeof(ActiveDirectoryMembershipProvider))
+            {                
+                if (username.Contains("\\"))
+                {
+                    string[] loginParts = username.Split('\\');
+                    if (loginParts.Length > 2)
+                    {
+                        continue;
+                    }
+
+                    if (loginParts[0].ToUpper() == provider.Name.ToUpper())
+                    {
+                        username = loginParts[1];
+                    }
+                    else
+                    {
+                        continue;
+                    }
+                }
+
+                if (provider.ValidateUser(username, password))
+                {
+                    var user = provider.GetUser(username, false);
+                    if (user != null) email = user.Email;
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
 
     private IEnumerable<MembershipProvider> GetADMembershipProviders()
     {
@@ -76,120 +183,48 @@ public partial class TpLogin : PersisterBasePage
     {        
         FormsAuthenticationTicket ticket = FormsAuthentication.Decrypt(authCookie.Value);
         FormsAuthenticationTicket newTicket =
-            new FormsAuthenticationTicket(ticket.Version, ticket.Name, ticket.IssueDate, ticket.Expiration, ticket.IsPersistent, username);
+           new FormsAuthenticationTicket(ticket.Version, ticket.Name, ticket.IssueDate, ticket.Expiration, ticket.IsPersistent, username);
         authCookie.Value = FormsAuthentication.Encrypt(newTicket);
         return authCookie.Value;
     }
 
-	private void PerformLogin(string username, string password)
-	{
-		Response.Cookies.Remove(Globals.LOGIN_COOKIE);
-		Response.Cookies.Remove(Globals.PASSWORD_COOKIE);
+    private void ShowPasswordSentPanel()
+    {
+        loginPanel.Visible = false;
+        forgotPasswordPanel.Visible = false;
+        passwordSentPanel.Visible = true;
+    }
 
-		//DataPortal.Instance.ResetCachedValue(typeof(Requester), requester.ID);
-
-        bool authenticated = false;
-        string fullDomainName = null;
-        foreach (MembershipProvider provider in this.GetADMembershipProviders())
+    protected void OnSendPasswordButtonClick(object sender, EventArgs e)
+    {
+        HideLoginPanel();
+        try
         {
-            if (provider.GetType() == typeof(ActiveDirectoryMembershipProvider))
-            {
-                string login = username;
-                if (username.Contains("\\"))
-                {
-                    string[] loginParts = username.Split('\\');
-                    if (loginParts.Length > 2)
-                    {
-                        continue;
-                    }
-
-                    if (loginParts[0].ToUpper() == provider.Name.ToUpper())
-                    {
-                        login = loginParts[1];
-                    }
-                    else
-                    {
-                        continue;
-                    }
-                }
-
-                if (provider.ValidateUser(login, password))
-                {
-                    fullDomainName = string.Format(@"{0}\{1}", provider.Name, login);
-                    System.Web.HttpCookie authCookie = FormsAuthentication.GetAuthCookie(fullDomainName, false);
-                    if (this.StoreUserInfoIntoCookie(username, authCookie) != null)
-                    {
-                        authCookie.Expires = authCookie.Expires.AddMinutes(20130);
-                        Response.Cookies.Add(authCookie);
-                        authenticated = true;
-                        break;
-                    }
-                }
-            }
+            bool result = Requester.ForgotPassword(emailToSendPassword.Text);
+            if (result)
+                ShowPasswordSentPanel();
+            ShowErrorMessage(string.Format("The User with email '{0}' does not exist.", emailToSendPassword.Text));
         }
-		FormsAuthentication.RedirectFromLoginPage(username, RememberMe.Checked);
-		Globals.IsLogOut = false;
-	}
+        catch (Exception ex)
+        {
+            ShowErrorMessage(ex.Message);
+        }
+    }
 
-	protected void OnLogin(object sender, CommandEventArgs e)
-	{
-		switch (e.CommandName)
-		{
-			case "LoginAsGuest":
-				Response.Redirect("~/");
-				break;
-			case "Login":
+    private void ShowErrorMessage(string message)
+    {
+        errorMessage.Text = message;
+        errorMessage.Visible = true;
+    }
 
-                PerformLogin(UserName.Text, Password.Text);
+    private void HideLoginPanel()
+    {
+        loginPanel.Visible = false;
+        forgotPasswordPanel.Visible = true;
+    }
 
-                //if(Requester.Validate(UserName.Text, Password.Text))
-                //{
-                //    Requester user = Requester.FindByEmail(UserName.Text);
-                //    PerformLogin(user);
-                //}
-                //else
-                //    FailureText.Text = "Login failed. Most likely you have entered incorrect login or password.";
-                break;
-		}
-	}
-
-	private void ShowPasswordSentPanel()
-	{
-		loginPanel.Visible = false;
-		forgotPasswordPanel.Visible = false;
-		passwordSentPanel.Visible = true;
-	}
-
-	protected void OnSendPasswordButtonClick(object sender, EventArgs e)
-	{
-		HideLoginPanel();
-		try
-		{
-			bool result = Requester.ForgotPassword(emailToSendPassword.Text);
-			if (result)
-				ShowPasswordSentPanel();
-			ShowErrorMessage(string.Format("The User with email '{0}' does not exist.", emailToSendPassword.Text));
-		}
-		catch (Exception ex)
-		{
-			ShowErrorMessage(ex.Message);
-		}
-	}
-
-	private void ShowErrorMessage(string message)
-	{
-		errorMessage.Text = message;
-		errorMessage.Visible = true;
-	}
-
-	private void HideLoginPanel()
-	{
-		loginPanel.Visible = false;
-		forgotPasswordPanel.Visible = true;
-	}
-
-	protected void forgotPassword_OnForgotPassword(object sender, EventArgs e)
-	{
-		HideLoginPanel();
-	}
+    protected void forgotPassword_OnForgotPassword(object sender, EventArgs e)
+    {
+        HideLoginPanel();
+    }
 }
