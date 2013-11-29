@@ -19,7 +19,7 @@
 										<table id="loginPanel" cellpadding="0" cellspacing="0" style="margin: 20px">
 											<tr>
 												<td colspan="2" class="loginTitle" style="height: 38px">
-													<span class="loginTitle">Help Desk Portal / Authorize&nbsp;</span>
+													<span class="loginTitle">Moravia Help Desk</span>
 												</td>
 											</tr>
 											<tr>
@@ -30,7 +30,7 @@
 											<tr>
 												<td>
 													<br />
-													Email
+													Username
 												</td>
 												<td>
 													<br />
@@ -51,14 +51,6 @@
 											</tr>
 											<tr>
 												<td>
-													&nbsp;
-												</td>
-												<td>
-													<asp:LinkButton OnClick="forgotPassword_OnForgotPassword" runat="server" ID="forgotPassword">Forgot your password?</asp:LinkButton>
-												</td>
-											</tr>
-											<tr>
-												<td>
 												</td>
 												<td>
 													<asp:CheckBox ID="RememberMe" runat="server" Text="Remember me next time"></asp:CheckBox>
@@ -75,7 +67,7 @@
 											</tr>
 											<tr>
 												<td align="left" colspan="2">
-													Please login to see your requests or <a href="register.aspx">Register</a>.
+													Please login to see your requests.
 												</td>
 											</tr>
 										</table>
