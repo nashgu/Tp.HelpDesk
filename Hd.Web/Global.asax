@@ -11,8 +11,8 @@
         XmlElement config = (XmlElement)ConfigurationManager.GetSection("log4net");
         XmlConfigurator.Configure(config);
         log.Info("Application was started");
-        BeginRequest += global_asax_BeginRequest;
-        EndRequest += global_asax_EndRequest;
+        // BeginRequest += global_asax_BeginRequest;
+        // EndRequest += global_asax_EndRequest;
     }
 
     void global_asax_EndRequest(object sender, EventArgs e)
