@@ -12,24 +12,27 @@
     <form id="frm" runat="server">
         <asp:ScriptManager ID="sm" runat="server" ScriptMode="Release" />
         <div id="top">
-            <div id="title">
-                <span style="margin-left: 35px">
-                    <%= Settings.Title %>
-                </span>
-            </div>
+            
+            
             <div id="logout">
                 <span id="spanUsername" runat="server">
                     <asp:Label ID='lblLoginName' runat="server"></asp:Label>
                     | </span>
-                <tp:TpLoginStatus ID="loginStatus" runat="server" OnLoggingOut="loginStatus_LoggingOut" />
+                <tp:TpLoginStatus CssClass="btn btn-default btn-sm" ID="loginStatus" runat="server" OnLoggingOut="loginStatus_LoggingOut" />
                 <br />
             </div>
-            <br style="clear: both" />
-            <div style="clear: both">
+            
+            <div>
                 <div style="float: left; width: 60%">
+                    <img src="img/symfonie_logo.png" class="img_float_left"/>
                     <asp:ContentPlaceHolder ID="tabs" runat="server">
                     </asp:ContentPlaceHolder>
                 </div>
+                <div id="title">
+                <span style="margin-left: 35px">
+                    <%= Settings.Title %>
+                </span>
+                    </div>
                 <div style="float: right; width: 30%; margin-right: 15px; text-align: right">
                     <table style="margin-top: 10px" cellpadding="0" cellspacing="0" border="0" align="right"
                         runat="server" id="tblSearch">
@@ -46,14 +49,14 @@
                             </td>
                             <td>
                                 <asp:Button UseSubmitBehavior="true" ID="btnSearch" runat="server" Text="Search requests"
-                                    CssClass="button" OnClick="btnSearch_Click" ValidationGroup="KeywordSearch" CausesValidation="true" />
+                                    CssClass="btn btn-default btn-primary" OnClick="btnSearch_Click" ValidationGroup="KeywordSearch" CausesValidation="true" />
                             </td>
                         </tr>
                     </table>
                 </div>
             </div>
         </div>
-        <br style="clear: both" />
+
         <asp:UpdatePanel ID="pnlLastAction" runat="server">
             <ContentTemplate>
                 <table width="100%" cellpadding="0" cellspacing="0">
@@ -65,7 +68,8 @@
                 </table>
             </ContentTemplate>
         </asp:UpdatePanel>
-        <div>
+        <div class="space"></div>
+        <div class="container">
             <asp:ContentPlaceHolder ID="plcContent" runat="server">
             </asp:ContentPlaceHolder>
         </div>

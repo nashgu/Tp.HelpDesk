@@ -13,7 +13,7 @@
 			Url="Issues.aspx" Text="Issues" />
 		<tp:RequestScopeTab ID="RequestScopeTab4" CssClass="tab" Scope="Global" runat="server"
 			Url="Ideas.aspx" Text="Ideas" />
-		<tp:RequestScopeTab ID="RequestScopeTab3" Scope="Private" CssClass="clearTab" runat="server"
+		<tp:RequestScopeTab ID="RequestScopeTab3" Scope="Private" CssClass="btn btn-warning btn-sm" runat="server"
 			Url="Request.aspx" Text="Add Request" />
 	</div>
 </asp:Content>
@@ -77,9 +77,9 @@
 				<br />
 				<br />
 				<div style="padding: 10px 10px; background: #E5E5E5; border-top: 1px solid #CCC">
-					<asp:Button ID="UpdateButton" CssClass="largeButton" runat="server" CausesValidation="True"
+					<asp:Button ID="UpdateButton" CssClass="btn btn-default" runat="server" CausesValidation="True"
 						CommandName="Update" Text="Submit Request"></asp:Button>
-					<a class="buttonSecondary" href="javascript:history.back(-1)">Cancel</a>
+					<a class="btn btn-danger" style="color:white" href="javascript:history.back(-1)">Cancel</a>
 				</div>
 			</div>
 		</EditItemTemplate>

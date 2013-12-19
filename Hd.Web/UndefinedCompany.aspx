@@ -8,7 +8,7 @@
 		<tp:RequestScopeTab ID="RequestScopeTab1" CssClass="tab"  runat="server" Text="My Requests" Url="MyRequests.aspx"  />
 		<tp:RequestScopeTab ID="RequestScopeTab2" CssClass="tab" runat="server" Url="Issues.aspx" Text="Issues" />
 		<tp:RequestScopeTab ID="RequestScopeTab4" CssClass="tab" runat="server" Url="Ideas.aspx" Text="Ideas" />
-		<tp:RequestScopeTab ID="RequestScopeTab3" CssClass="clearTab" runat="server" Url="Request.aspx" Text="Add Request"  />
+		<tp:RequestScopeTab ID="RequestScopeTab3" CssClass="btn btn-warning btn-sm" runat="server" Url="Request.aspx" Text="Add Request"  />
 	</div>
 </asp:content>
 <asp:content id="cnt" contentplaceholderid="plcContent" runat="Server">

@@ -2,7 +2,7 @@
 <%@ Import Namespace="Hd.Portal"%>
 
 <tp:VoteManager runat="server" ID="voteManager" />
-<asp:GridView ID="requestListing" CellPadding="3" CellSpacing="0" CssClass="generalTable"
+<asp:GridView ID="requestListing" CellPadding="3" CellSpacing="0" CssClass="table"
     runat="server" AutoGenerateColumns="False" GridLines="None" AllowSorting="True"
     AllowPaging="false" PageSize="10" DataKeyNames="RequestID" ShowFooter="true">
     <HeaderStyle CssClass="headRow" />

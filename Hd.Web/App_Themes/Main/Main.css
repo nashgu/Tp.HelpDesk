@@ -1,27 +1,36 @@
-BODY {padding: 0; margin: 0; font: 12px Verdana; background: #F9F9F9}
+BODY {padding: 0; margin: 0; font: 12px Verdana;}
 TD, TR, P {font: 12px Verdana}
 
-A {color: #28428B}
-A:hover {color: orange}
-	
-#top {background: #BEDEB3; width: 100%; padding-top: 10px; float: left}
-#title {float: left; width: 40%; font: bold 18px Arial}
-#logout {float: right; width: 50%; text-align: right; font: 11px Verdana; margin-right: 15px}
-	
-.tab {float: left;background: #638658;border-top:1px solid #638658;border-left:1px solid #638658;border-right:1px solid #638658; padding: 10px 20px; margin-right: 3px }
-.tab A {font: 14px Arial; color: #FFF}
-.tab A:hover {color: #BEDEB3}
+.input {height:33px;width:350px;margin-top:1px;}
 
-.selectedTab {float: left;background: #F9F9F9;border-top:1px solid #638658;border-left:1px solid #638658;border-right:1px solid #638658; padding: 10px 20px; margin-right: 3px }
-.selectedTab A {font: 14px Arial; color: black}
-.selectedTab A:hover {color: #BEDEB3}
+.container A {color: #28428B}
+.container A:hover {color: orange}
 
-.clearTab {float: left;padding: 10px 20px; margin-right: 3px }
-.clearTab A {font: bold 14px Arial; color: #000}
-.clearTab A:hover {color: #638658}
+.btn A {color: #FFF;font-weight:normal;}
+.btn A:hover {color: #FFF; text-decoration:none;font-weight:normal;}
 	
-#tabs {margin-top: 15px; margin-left: 15px}
-#search {float: right; width: 50%; text-align: right; margin-top: 20px; margin-right: 15px}
+#top {background: black; width: 100%; height:40px; float: left; padding-top:5px;}
+#title {float: left; font: bold 18px Arial; position: relative; top: 0px; margin-top:4px;}
+#logout {float: right;  text-align: right; font: 11px Verdana; margin-right: 15px; color:#FFF;}
+	
+.tab {float: left;background: black;border-top:0px solid #638658;border-left:0px solid #638658;border-right:0px solid #638658; padding: 0px 0px; margin-top:6px; margin-right: 20px }
+.tab A {font: 14px Arial; color: #999}
+.tab A:hover {color: #FFF; text-decoration:none;}
+
+.selectedTab {float: left;background: black;border-top:0px solid #638658;border-left:0px solid #638658;border-right:0px solid #638658; padding: 0px 0px; margin-top:6px; margin-right: 20px }
+.selectedTab A {font: 14px Arial; color: #FFF}
+.selectedTab A:hover {color: #FFF; text-decoration:none;}
+
+.clearTab {float: left;padding: 0px 0px; margin-right: 20px ;margin-top:6px;}
+.clearTab A {font: bold 14px Arial; color: #999}
+.clearTab A:hover {color: #FFF; text-decoration:none;}
+
+.space {height:70px;}
+
+.img_float_left {float:left; margin-left:20px; margin-right:40px; position:relative; top:0px;}
+	
+#tabs {margin-top: 0px; margin-left: 15px}
+#search {float: right; width: 50%; text-align: right; margin-top: 0px; margin-right: 15px}
 IMG.icon {margin: 0px 5px 0px 0px; position: relative; top: 2px; border:none;}
 	
 .input {border: 1px solid #000; font: 14px Arial;}
@@ -35,7 +44,7 @@ A.buttonSecondary {margin-left: 20px; font-weight: bold; color: #333}
 A.buttonSecondary:hover {background: red; color: #FFF}
 
 .tableHead {width: 97%; margin: 0 1%; background: #C4C4C4;}
-.tableHeadBar {height: 30px}
+.tableHeadBar {height: 0px}
 .tableTitle {font: bold 14px Arial; color: #000}
 .generalTable {width: 97%; margin: 0 1%}
 .generalTable TR {background:  url('Images/bg.gif') repeat-x 0px 0px;}

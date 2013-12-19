@@ -18,55 +18,47 @@
 									<asp:Panel runat="server" ID="loginPanel">
 										<table id="loginPanel" cellpadding="0" cellspacing="0" style="margin: 20px">
 											<tr>
-												<td colspan="2" class="loginTitle" style="height: 38px">
-													<span class="loginTitle">Moravia Help Desk</span>
+												<td class="login_header">
+												<img src="img/symfonie_logo.png" alt="Symfonie" />Moravia Help Desk
 												</td>
 											</tr>
 											<tr>
-												<td colspan="2" style="color: #507cb6">
+												<td style="color: #507cb6">
 													<asp:Literal ID="FailureText" runat="server"></asp:Literal>
 												</td>
 											</tr>
 											<tr>
 												<td>
-													<br />
-													Username
-												</td>
-												<td>
-													<br />
-													<asp:TextBox ID="UserName" CssClass="inputLarge" runat="server"></asp:TextBox>
+												
+                                                    <label for="USerName">Username</label>
+													<asp:TextBox ID="UserName" CssClass="form-control" runat="server"></asp:TextBox>
 													<asp:RequiredFieldValidator ValidationGroup="login" ID="UserNameRequired" runat="server"
 														ControlToValidate="UserName" Text="*"></asp:RequiredFieldValidator>
 												</td>
 											</tr>
 											<tr>
+												
 												<td>
-													Password
-												</td>
-												<td>
-													<asp:TextBox ID="Password" CssClass="inputLarge" runat="server" TextMode="Password"></asp:TextBox>
+                                                    <label for="Password">Password</label>
+													<asp:TextBox ID="Password" CssClass="form-control" runat="server" TextMode="Password"></asp:TextBox>
 													<asp:RequiredFieldValidator ValidationGroup="login" ID="PasswordRequired" runat="server"
 														ControlToValidate="Password" Text="*"></asp:RequiredFieldValidator>
 												</td>
 											</tr>
 											<tr>
 												<td>
-												</td>
-												<td>
 													<asp:CheckBox ID="RememberMe" runat="server" Text="Remember me next time"></asp:CheckBox>
 												</td>
 											</tr>
 											<tr>
 												<td>
-												</td>
-												<td>
-													<asp:Button ID="btnLogin" ValidationGroup="login" CssClass="inputLarge" CommandName="Login"
+													<asp:Button ID="btnLogin" ValidationGroup="login" CssClass="btn btn-default" CommandName="Login"
 														runat="server" Text="Enter" OnCommand="OnLogin"></asp:Button>
 													<asp:Button ID="btnLoginAsGuest" CssClass="inputLarge"  CommandName="LoginAsGuest" runat="server" Text="Guest" OnCommand="OnLogin" />
 												</td>
 											</tr>
 											<tr>
-												<td align="left" colspan="2">
+												<td align="left">
 													Please login to see your requests.
 												</td>
 											</tr>

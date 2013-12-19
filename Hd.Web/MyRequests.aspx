@@ -11,7 +11,7 @@
 		<tp:RequestScopeTab ID="RequestScopeTab2" Scope="Global" CssClass="tab" runat="server" Url="Issues.aspx"
 			Text="Issues" />
 		<tp:RequestScopeTab ID="RequestScopeTab4" CssClass="tab"  Scope="Global" runat="server" Url="Ideas.aspx" Text="Ideas" />
-		<tp:RequestScopeTab ID="RequestScopeTab3" Scope="Private" CssClass="clearTab" runat="server" Url="Request.aspx"
+		<tp:RequestScopeTab ID="RequestScopeTab3" Scope="Private" CssClass="btn btn-warning btn-sm" runat="server" Url="Request.aspx"
 			Text="Add Request" />
 	</div>
 </asp:Content>
@@ -28,7 +28,7 @@
 			<td width="50%">
 				<tp:GridController ID="ownerController" runat="server" GridID="rg" QueryType="Hd.Portal.OwnerRequestQuery"
 					EntityType="Hd.Portal.Request, Hd.Portal" PagerID="pager" OnDeleteEntity="OnDeleteEntity" />
-				<asp:GridView ID="rg" CellPadding="3" CellSpacing="0" CssClass="generalTable" runat="server"
+				<asp:GridView ID="rg" CellPadding="3" CellSpacing="0" CssClass="table" runat="server"
 					AutoGenerateColumns="False" GridLines="None" AllowSorting="True" AllowPaging="false"
 					PageSize="10" DataKeyNames="RequestID" ShowFooter="true">
 					<HeaderStyle CssClass="headRow" />
@@ -105,7 +105,7 @@
 			<td width="50%">
 				<tp:GridController ID="requesterController" runat="server" GridID="GridView1" QueryType="Hd.Portal.RequesterRequestQuery"
 					EntityType="Hd.Portal.Request, Hd.Portal" PagerID="requesterPager" OnDeleteEntity="OnDeleteEntity" />
-				<asp:GridView ID="GridView1" CellPadding="3" CellSpacing="0" CssClass="generalTable" runat="server"
+				<asp:GridView ID="GridView1" CellPadding="3" CellSpacing="0" CssClass="table" runat="server"
 					AutoGenerateColumns="False" GridLines="None" AllowSorting="True" AllowPaging="false"
 					PageSize="10" DataKeyNames="RequestID" ShowFooter="true">
 					<HeaderStyle CssClass="headRow" />

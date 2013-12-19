@@ -10,7 +10,7 @@
         <tp:RequestScopeTab ID="RequestScopeTab2" IsPublic="True" Scope="Global" CssClass="tab" runat="server" Url="Issues.aspx"
             Text="Issues" />
 		<tp:RequestScopeTab ID="RequestScopeTab4" CssClass="selectedTab" IsPublic="True" Scope="Global" runat="server" Url="Ideas.aspx" Text="Ideas" />
-        <tp:RequestScopeTab ID="RequestScopeTab3" Scope="Private" CssClass="clearTab" runat="server" Url="Request.aspx"
+        <tp:RequestScopeTab ID="RequestScopeTab3" Scope="Private" CssClass="btn btn-warning btn-sm" runat="server" Url="Request.aspx"
             Text="Add Request" />
     </div>
 </asp:Content>
