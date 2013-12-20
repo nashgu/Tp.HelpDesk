@@ -93,12 +93,7 @@ public partial class TpLogin : PersisterBasePage
                 bool isInLDAP = LogonUsingLDAP(username, Password.Text, out ldapUser);
                 if (isInLDAP)
                 {
-                    password = CryptSharp.Crypter.Blowfish.Crypt(Password.Text, new CryptSharp.CrypterOptions());
-                    
                     Requester user = Requester.FindByEmail(ldapUser.Email);
-
-                    // validate by Requester.Validate(ldapUser.Email, password), but there is a reason to not valid requester
-                    // too long password??
 
                     if (user == null)
                     {
@@ -109,7 +104,7 @@ public partial class TpLogin : PersisterBasePage
                             user = Requester.RetrieveOrCreate(user == null ? null : user.UserID);
                             user.Email = ldapUser.Email;
                             user.Login = ldapUser.UserName;
-                            user.Password = password;
+                            user.Password = "LB14q4TyL6grOou";
 
                             // ... what else to save to create valid requester?
                             Requester.Save(user);
