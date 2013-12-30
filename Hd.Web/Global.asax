@@ -1,12 +1,12 @@
-<%@ Import namespace="log4net.Config"%>
-<%@ Import namespace="log4net"%>
-<%@ Import namespace="System.Xml"%>
+<%@ Import Namespace="log4net.Config" %>
+<%@ Import Namespace="log4net" %>
+<%@ Import Namespace="System.Xml" %>
 <%@ Application Language="C#" %>
 
-<script runat="server">
+<script RunAt="server">
     private static readonly ILog log = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-    
-    void Application_Start(object sender, EventArgs e) 
+
+    void Application_Start(object sender, EventArgs e)
     {
         XmlElement config = (XmlElement)ConfigurationManager.GetSection("log4net");
         XmlConfigurator.Configure(config);
@@ -24,27 +24,26 @@
     {
         log.DebugFormat("Begin Request '{0}'", HttpContext.Current.Request.Url.AbsoluteUri);
     }
-    
-    void Application_End(object sender, EventArgs e) 
+
+    void Application_End(object sender, EventArgs e)
     {
         log.Info("Application was stopped");
     }
-        
-    void Application_Error(object sender, EventArgs e) 
-    { 
+
+    void Application_Error(object sender, EventArgs e)
+    {
         log.Error("Application Error", Server.GetLastError());
     }
 
-    void Session_Start(object sender, EventArgs e) 
-    {}
+    void Session_Start(object sender, EventArgs e)
+    { }
 
-    void Session_End(object sender, EventArgs e) 
+    void Session_End(object sender, EventArgs e)
     {
-        // Code that runs when a session ends. 
+        // Code that runs when a session ends.
         // Note: The Session_End event is raised only when the sessionstate mode
-        // is set to InProc in the Web.config file. If session mode is set to StateServer 
+        // is set to InProc in the Web.config file. If session mode is set to StateServer
         // or SQLServer, the event is not raised.
 
     }
-       
 </script>

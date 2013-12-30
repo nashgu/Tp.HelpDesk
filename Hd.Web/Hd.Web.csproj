@@ -109,6 +109,7 @@
     <Content Include="Controls\ProductFilterDropDown.ascx" />
     <Content Include="Controls\ProductDropDown.ascx" />
     <Content Include="Default.aspx" />
+    <Content Include="favicon.ico" />
     <Content Include="robots.txt" />
     <Content Include="Web.config" />
   </ItemGroup>
