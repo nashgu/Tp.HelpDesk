@@ -73,7 +73,7 @@
             </ContentTemplate>
         </asp:UpdatePanel>
         <div class="space"></div>
-        <div class="container">
+        <div class="container" style="margin-top:30px;">
             <asp:ContentPlaceHolder ID="plcContent" runat="server">
             </asp:ContentPlaceHolder>
         </div>

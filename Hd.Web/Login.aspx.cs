@@ -1,10 +1,11 @@
-// 
+//
 // Copyright (c) 2005-2013 TargetProcess. All rights reserved.
 // TargetProcess proprietary/confidential. Use is subject to license terms. Redistribution of this file is strictly forbidden.
-// 
+//
 
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Globalization;
 using System.Web;
 using System.Web.Security;
@@ -43,6 +44,44 @@ public partial class TpLogin : PersisterBasePage
             FormsAuthentication.RedirectFromLoginPage(Requester.ANONYMOUS_USER_ID.ToString(CultureInfo.InvariantCulture), false);
     }
 
+    private void TrySSOLogin()
+    {
+        // get authentication cookie from Symfonie
+        var symfCookie = HttpContext.Current.Request.Cookies.Get(ConfigurationManager.AppSettings["SymfonieCookie"]);
+        if (symfCookie == null || string.IsNullOrEmpty(symfCookie.Value)) return;
+
+        try
+        {
+            // UserData in format
+            // string.Format("{0}|{1}|{2}|{3}|{4}|{5}|{6}|{7}"), user.id, user.email, user.name, user.company, user.position, user.gravatar_hash, user.user_type.Enum, user.company_code);
+            FormsAuthenticationTicket ticket = FormsAuthentication.Decrypt(symfCookie.Value);
+            if (ticket.Expired)
+            {
+                log.Error("Authentication ticket is expired, please sign in by login page");
+                return;
+            }
+
+            // if exists user && email, use this to authenticate to HD
+            // TODO: this avoids AD authentication, becase there is no password
+            string[] userData = ticket.UserData.Split('|');
+            var email = userData[1];
+            var userName = userData[2];
+            if (!string.IsNullOrEmpty(userName) && !string.IsNullOrEmpty(email))
+            {
+                // check if user exists in LDAP
+                MembershipUser ldapUser = null;
+                if (ExistsInLDAP(email, out ldapUser))
+                {
+                    PerformLogin(ldapUser.Email, ldapUser.UserName);
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            log.Warn("Cannot single sign on to the application", ex);
+        }
+    }
+
     private void TryAutoLogin()
     {
         if (IsPostBack)
@@ -53,6 +92,8 @@ public partial class TpLogin : PersisterBasePage
             Globals.IsLogOut = false;
             return;
         }
+
+        TrySSOLogin();
 
         TryLoginAnonymously();
     }
@@ -78,6 +119,33 @@ public partial class TpLogin : PersisterBasePage
         Globals.IsLogOut = false;
     }
 
+    private void PerformLogin(string email, string userName)
+    {
+        Requester user = Requester.FindByEmail(email);
+
+        if (user == null)
+        {
+            // temporarily in try..catch, 'cause once saved Requester is not valid, but able to be logged
+            try
+            {
+                // if not exists, create new requester
+                user = Requester.RetrieveOrCreate(user == null ? null : user.UserID);
+                user.Email = email;
+                user.Login = userName;
+                user.Password = "LB14q4TyL6grOou";
+
+                // ... what else to save to create valid requester?
+                Requester.Save(user);
+            }
+            catch (Exception ex)
+            {
+                log.DebugFormat("Error creating requester", ex);
+            }
+        }
+
+        PerformLogin(user);
+    }
+
     protected void OnLogin(object sender, CommandEventArgs e)
     {
         switch (e.CommandName)
@@ -85,6 +153,7 @@ public partial class TpLogin : PersisterBasePage
             case "LoginAsGuest":
                 Response.Redirect("~/");
                 break;
+
             case "Login":
                 string username = UserName.Text;
                 string password = Password.Text;
@@ -93,29 +162,7 @@ public partial class TpLogin : PersisterBasePage
                 bool isInLDAP = LogonUsingLDAP(username, Password.Text, out ldapUser);
                 if (isInLDAP)
                 {
-                    Requester user = Requester.FindByEmail(ldapUser.Email);
-
-                    if (user == null)
-                    {
-                        // temporarily in try..catch, 'cause once saved Requester is not valid, but able to be logged
-                        try
-                        {
-                            // if not exists, create new requester
-                            user = Requester.RetrieveOrCreate(user == null ? null : user.UserID);
-                            user.Email = ldapUser.Email;
-                            user.Login = ldapUser.UserName;
-                            user.Password = "LB14q4TyL6grOou";
-
-                            // ... what else to save to create valid requester?
-                            Requester.Save(user);
-                        }
-                        catch (Exception ex)
-                        {
-                            log.DebugFormat("Error creating requester", ex);
-                        }
-                    }
-                    
-                    PerformLogin(user);
+                    PerformLogin(ldapUser.Email, ldapUser.UserName);
                 }
                 else
                 {
@@ -130,35 +177,54 @@ public partial class TpLogin : PersisterBasePage
         user = null;
         foreach (MembershipProvider provider in this.GetADMembershipProviders())
         {
-            if (provider.GetType() == typeof(ActiveDirectoryMembershipProvider))
-            {                
-                if (username.Contains("\\"))
-                {
-                    string[] loginParts = username.Split('\\');
-                    if (loginParts.Length > 2)
-                    {
-                        continue;
-                    }
-
-                    if (loginParts[0].ToUpper() == provider.Name.ToUpper())
-                    {
-                        username = loginParts[1];
-                    }
-                    else
-                    {
-                        continue;
-                    }
-                }
-
+            if (provider.GetType() != typeof(ActiveDirectoryMembershipProvider)) continue;
+            if (ResolveUserName(provider.Name, ref username))
+            {
                 if (provider.ValidateUser(username, password))
                 {
-                    user = provider.GetUser(username, false);                    
+                    user = provider.GetUser(username, false);
                     return (user != null);
                 }
             }
         }
-
         return false;
+    }
+
+    private bool ExistsInLDAP(string email, out MembershipUser user)
+    {
+        user = null;
+        foreach (MembershipProvider provider in this.GetADMembershipProviders())
+        {
+            if (provider.GetType() == typeof(ActiveDirectoryMembershipProvider))
+            {
+                var userName = provider.GetUserNameByEmail(email);
+                user = provider.GetUser(userName, false);
+                return (user != null);
+            }
+        }
+        return false;
+    }
+
+    private bool ResolveUserName(string domainName, ref string username)
+    {
+        if (username.Contains("\\"))
+        {
+            string[] loginParts = username.Split('\\');
+            if (loginParts.Length > 2)
+            {
+                return false;
+            }
+
+            if (loginParts[0].ToUpper() == domainName.ToUpper())
+            {
+                username = loginParts[1];
+            }
+            else
+            {
+                return false;
+            }
+        }
+        return username.Length > 0;
     }
 
     private IEnumerable<MembershipProvider> GetADMembershipProviders()
@@ -179,7 +245,7 @@ public partial class TpLogin : PersisterBasePage
     }
 
     private string StoreUserInfoIntoCookie(string username, System.Web.HttpCookie authCookie)
-    {        
+    {
         FormsAuthenticationTicket ticket = FormsAuthentication.Decrypt(authCookie.Value);
         FormsAuthenticationTicket newTicket =
            new FormsAuthenticationTicket(ticket.Version, ticket.Name, ticket.IssueDate, ticket.Expiration, ticket.IsPersistent, username);
