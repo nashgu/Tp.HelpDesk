@@ -39,15 +39,6 @@ public partial class main {
     protected global::System.Web.UI.HtmlControls.HtmlGenericControl spanUsername;
     
     /// <summary>
-    /// settingsLink control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.WebControls.HyperLink settingsLink;
-    
-    /// <summary>
     /// lblLoginName control.
     /// </summary>
     /// <remarks>
@@ -75,6 +66,15 @@ public partial class main {
     protected global::System.Web.UI.WebControls.ContentPlaceHolder tabs;
     
     /// <summary>
+    /// phPageTitle control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.ContentPlaceHolder phPageTitle;
+    
+    /// <summary>
     /// tblSearch control.
     /// </summary>
     /// <remarks>
@@ -84,13 +84,13 @@ public partial class main {
     protected global::System.Web.UI.HtmlControls.HtmlTable tblSearch;
     
     /// <summary>
-    /// RequiredFieldValidator1 control.
+    /// phProduct control.
     /// </summary>
     /// <remarks>
     /// Auto-generated field.
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
-    protected global::System.Web.UI.WebControls.RequiredFieldValidator RequiredFieldValidator1;
+    protected global::System.Web.UI.WebControls.ContentPlaceHolder phProduct;
     
     /// <summary>
     /// txtSearch control.
@@ -109,6 +109,15 @@ public partial class main {
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
     protected global::System.Web.UI.WebControls.Button btnSearch;
+    
+    /// <summary>
+    /// RequiredFieldValidator1 control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.RequiredFieldValidator RequiredFieldValidator1;
     
     /// <summary>
     /// pnlLastAction control.

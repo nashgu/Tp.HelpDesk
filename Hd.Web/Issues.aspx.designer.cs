@@ -12,6 +12,15 @@
 public partial class Issues {
     
     /// <summary>
+    /// tpProductDropDown control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::Hd.Web.Controls.ProductFilterDropDown tpProductDropDown;
+    
+    /// <summary>
     /// div2 control.
     /// </summary>
     /// <remarks>

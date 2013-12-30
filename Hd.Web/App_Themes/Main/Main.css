@@ -149,3 +149,5 @@ TH {text-align: left;}
 .requestName{font-size: 14px; font-weight: bold;} 
 
 .wordHighlight {font-weight:bold; color:red;}
+
+.dropDown, .textBox {height: 35px; border-radius: 5px; padding: 4px 6px; border: 1px solid #cccccc; }

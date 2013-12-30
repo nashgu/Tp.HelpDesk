@@ -47,7 +47,7 @@
 											</tr>
 											<tr>
 												<td>
-													<asp:CheckBox ID="RememberMe" runat="server" Text="Remember me next time"></asp:CheckBox>
+													<asp:CheckBox ID="RememberMe" runat="server" Text="&nbsp;Remember me next time"></asp:CheckBox>
 												</td>
 											</tr>
 											<tr>
@@ -63,59 +63,6 @@
 												</td>
 											</tr>
 										</table>
-									</asp:Panel>
-									<asp:Panel Visible="false" runat="server" ID="forgotPasswordPanel">
-										<table class="loginForm">
-											<tr>
-												<td colspan="2" class="loginTitle" style="height: 38px">
-													<span class="loginTitle">Reset Password</span>
-												</td>
-											</tr>
-											<tr>
-												<td colspan="2">
-													Please enter your email address and we will send you an email with instructions for resetting your password.
-												</td>
-											</tr>
-											<tr>
-												<td style="white-space: nowrap">
-													Email
-												</td>
-												<td>
-													<asp:Label Style="display:block;color: Red;" ID="errorMessage" Visible="false" runat="server" />
-													<asp:RequiredFieldValidator ID="emptyEmailValidator" Display="Dynamic" runat="server"
-														ErrorMessage="Please enter email" ControlToValidate="emailToSendPassword"></asp:RequiredFieldValidator>
-													<asp:RegularExpressionValidator ID="correctEmailValidator" runat="server" ControlToValidate="emailToSendPassword"
-														ErrorMessage="Please enter valid email" Display="Dynamic" ValidationExpression="\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*"></asp:RegularExpressionValidator>
-													<asp:TextBox CssClass="inputLarge" ID="emailToSendPassword" runat="server" />
-												</td>
-											</tr>
-											<tr>
-												<td>
-													&nbsp;
-												</td>
-												<td>
-													<asp:Button CssClass="inputLarge" OnClick="OnSendPasswordButtonClick" Text="Send"
-														runat="server" ID="sendPassword" />
-												</td>
-											</tr>
-										</table>
-									</asp:Panel>
-									<asp:Panel Visible="false" runat="server" ID="passwordSentPanel">
-										<table class="loginForm">
-											<tr>
-												<td colspan="2" class="loginTitle" style="height: 38px">
-													<span class="loginTitle">Reset Password</span>
-												</td>
-											</tr>
-											<tr>
-												<td colspan="2">
-<b>User Password Link Sent</b>
-<br/>
-You have requested a link be sent to your email address  which will enable you to reset your password. Please allow up to 15 minutes for it to arrive.
-	
-												</td>
-											</tr>
-											</table>
 									</asp:Panel>
 								</ContentTemplate>
 							</asp:UpdatePanel>

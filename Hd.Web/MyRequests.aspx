@@ -2,6 +2,7 @@
 	Inherits="MyRequests" Title="Untitled Page" Codebehind="MyRequests.aspx.cs" %>
 
 <%@ Import Namespace="Hd.Portal" %>
+<asp:Content ID="Content2" ContentPlaceHolderID="phPageTitle" runat="server">My requests</asp:Content>
 <asp:Content ContentPlaceHolderID="tabs" runat="server">
 	<div id="tabs">
 		<div class="tab" style="float: left" runat="server" id="div2">
@@ -55,6 +56,12 @@
 							</ItemTemplate>
 							<ItemStyle VerticalAlign="top" />
 						</asp:TemplateField>
+                        <asp:TemplateField HeaderText="Project Name" SortExpression="ProjectName">
+                            <ItemTemplate>
+                                <strong><%# Eval("ProjectName")%></strong>
+                            </ItemTemplate>
+                            <HeaderStyle Wrap="False" />
+                        </asp:TemplateField>
 						<asp:TemplateField HeaderText="Priority" SortExpression="Priority.Name">
 							<ItemTemplate>
 								<%# Eval("Priority.Name")%>

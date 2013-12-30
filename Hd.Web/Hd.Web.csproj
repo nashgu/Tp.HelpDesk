@@ -106,6 +106,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Controls\ProductFilterDropDown.ascx" />
     <Content Include="Controls\ProductDropDown.ascx" />
     <Content Include="Default.aspx" />
     <Content Include="robots.txt" />
@@ -113,6 +114,13 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Issues.aspx" />
+    <Compile Include="Controls\ProductFilterDropDown.ascx.cs">
+      <DependentUpon>ProductFilterDropDown.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Controls\ProductFilterDropDown.ascx.designer.cs">
+      <DependentUpon>ProductFilterDropDown.ascx</DependentUpon>
+    </Compile>
     <Compile Include="Controls\DescriptionLabel.cs" />
     <Compile Include="Controls\ProductDropDown.ascx.cs">
       <DependentUpon>ProductDropDown.ascx</DependentUpon>

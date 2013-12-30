@@ -12,8 +12,7 @@
     <form id="frm" runat="server">
         <asp:ScriptManager ID="sm" runat="server" ScriptMode="Release" />
         <div id="top">
-            
-            
+
             <div id="logout">
                 <span id="spanUsername" runat="server">
                     <asp:Label ID='lblLoginName' runat="server"></asp:Label>
@@ -21,35 +20,40 @@
                 <tp:TpLoginStatus CssClass="btn btn-default btn-sm" ID="loginStatus" runat="server" OnLoggingOut="loginStatus_LoggingOut" />
                 <br />
             </div>
-            
+
             <div>
                 <div style="float: left; width: 60%">
-                    <img src="img/symfonie_logo.png" class="img_float_left"/>
+                    <img src="img/symfonie_logo.png" class="img_float_left" />
                     <asp:ContentPlaceHolder ID="tabs" runat="server">
                     </asp:ContentPlaceHolder>
                 </div>
                 <div id="title">
-                <span style="margin-left: 35px">
-                    <%= Settings.Title %>
-                </span>
+                    <span style="margin-left: 35px">
+                        <%= Settings.Title %>
+                    </span>
+                </div>
+                <div style="float: right; width: 100%; margin-right: 15px; text-align: right">
+                    <div id="title" style="margin: 30px 0 0 80px;">
+                        <asp:ContentPlaceHolder ID="phPageTitle" runat="server"></asp:ContentPlaceHolder>
                     </div>
-                <div style="float: right; width: 30%; margin-right: 15px; text-align: right">
-                    <table style="margin-top: 10px" cellpadding="0" cellspacing="0" border="0" align="right"
-                        runat="server" id="tblSearch">
+                    <table style="margin-top: 5px;" cellpadding="5" cellspacing="0" border="0" align="right" runat="server" id="tblSearch">
                         <tr>
-                            <td colspan="2">
-                                <asp:RequiredFieldValidator ID="RequiredFieldValidator1" Text="Please enter keyword"
-                                    runat="server" ValidationGroup="KeywordSearch" ControlToValidate="txtSearch"></asp:RequiredFieldValidator>
+                            <td style="vertical-align: top;">
+                                <asp:ContentPlaceHolder ID="phProduct" runat="server"></asp:ContentPlaceHolder>
                             </td>
-                        </tr>
-                        <tr>
-                            <td>
+                            <td style="vertical-align: top;">
                                 <tp:TpTextBox MaxLength="150" ID="txtSearch" OnEnterPressSubmitControl="btnSearch" ValidationGroup="KeywordSearch" CausesValidation="true"
                                     runat="server"></tp:TpTextBox>&nbsp;
                             </td>
-                            <td>
+                            <td style="vertical-align: top;">
                                 <asp:Button UseSubmitBehavior="true" ID="btnSearch" runat="server" Text="Search requests"
                                     CssClass="btn btn-default btn-primary" OnClick="btnSearch_Click" ValidationGroup="KeywordSearch" CausesValidation="true" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="3">
+                                <asp:RequiredFieldValidator ID="RequiredFieldValidator1" Text="Please enter keyword"
+                                    runat="server" ValidationGroup="KeywordSearch" ControlToValidate="txtSearch"></asp:RequiredFieldValidator>
                             </td>
                         </tr>
                     </table>

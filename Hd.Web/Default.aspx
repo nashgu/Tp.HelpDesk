@@ -1,6 +1,7 @@
 ﻿<%@ Page Language="C#" MasterPageFile="~/main.master" AutoEventWireup="true"
 	Inherits="Default" Title="Untitled Page" EnableViewState="false" Codebehind="Default.aspx.cs" %>
 <%@ Import Namespace="Hd.Portal" %>
+<asp:Content ID="Content2" ContentPlaceHolderID="phPageTitle" runat="server">Home</asp:Content>
 <asp:Content ID="Content1" ContentPlaceHolderID="tabs" runat="server">
 	<div id="tabs">
 		<div class="selectedTab" style="float: left" runat="server" id="div2">
