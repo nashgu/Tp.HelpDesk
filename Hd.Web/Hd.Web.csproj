@@ -110,6 +110,22 @@
     <Content Include="Controls\ProductDropDown.ascx" />
     <Content Include="Default.aspx" />
     <Content Include="favicon.ico" />
+    <Content Include="img\4.gif" />
+    <Content Include="img\8.gif" />
+    <Content Include="img\9.gif" />
+    <Content Include="img\bg.gif" />
+    <Content Include="img\clip.gif" />
+    <Content Include="img\comment.gif" />
+    <Content Include="img\delete.gif" />
+    <Content Include="img\edit.gif" />
+    <Content Include="img\loading.gif" />
+    <Content Include="img\login\leftside.gif" />
+    <Content Include="img\login\rightside.gif" />
+    <Content Include="img\sort_down.gif" />
+    <Content Include="img\sort_up.gif" />
+    <Content Include="img\symfonie_logo.png" />
+    <Content Include="img\up.gif" />
+    <Content Include="img\view.gif" />
     <Content Include="robots.txt" />
     <Content Include="Web.config" />
   </ItemGroup>
