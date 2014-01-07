@@ -106,6 +106,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App_Themes\Main\bootstrap-theme.css" />
+    <Content Include="App_Themes\Main\bootstrap.css" />
+    <Content Include="App_Themes\Main\Images\symfonie_logo.png" />
     <Content Include="Controls\ProductFilterDropDown.ascx" />
     <Content Include="Controls\ProductDropDown.ascx" />
     <Content Include="Default.aspx" />
@@ -127,7 +130,9 @@
     <Content Include="img\up.gif" />
     <Content Include="img\view.gif" />
     <Content Include="robots.txt" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Issues.aspx" />
@@ -785,6 +790,7 @@
     <Content Include="Attachment.ashx" />
     <Content Include="main.master" />
     <Content Include="packages.config" />
+    <None Include="Properties\PublishProfiles\HelpDesk.pubxml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Hd.Portal\Hd.Portal.csproj">
