@@ -77,9 +77,9 @@
                 <br />
                 <br />
                 <div style="padding: 10px 10px; background: #E5E5E5; border-top: 1px solid #CCC">
-                    <asp:Button ID="UpdateButton" CssClass="btn btn-default" runat="server" CausesValidation="True"
+                    <asp:Button ID="UpdateButton" CssClass="btn btn-primary" runat="server" CausesValidation="True"
                         CommandName="Update" Text="Submit Request"></asp:Button>
-                    <a class="btn btn-danger" style="color: white" href="javascript:history.back(-1)">Cancel</a>
+                    <a class="btn btn-default" href="javascript:history.back(-1)">Cancel</a>
                 </div>
             </div>
         </EditItemTemplate>
